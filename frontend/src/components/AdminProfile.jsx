@@ -45,8 +45,8 @@ function AdminProfile() {
         // According to your .http files, admin reads users from /admin-api/users
         // We assume articles are available at /admin-api/articles or /user-api/articles
         const [userRes, articleRes] = await Promise.all([
-          axios.get("http://localhost:4000/admin-api/users", { withCredentials: true }),
-          axios.get("http://localhost:4000/user-api/articles", { withCredentials: true })
+          axios.get("https://blog-app-capstone-project-fliv.onrender.com/admin-api/users", { withCredentials: true }),
+          axios.get("https://blog-app-capstone-project-fliv.onrender.com/user-api/articles", { withCredentials: true })
         ]);
 
         if (userRes.status === 200) setUsers(userRes.data.payload || []);
@@ -64,7 +64,7 @@ function AdminProfile() {
   const toggleUserStatus = async (user) => {
     try {
       const res = await axios.patch(
-        "http://localhost:4000/admin-api/user-status",
+        "https://blog-app-capstone-project-fliv.onrender.com/admin-api/user-status",
         { userId: user._id, isUserActive: !user.isUserActive },
         { withCredentials: true }
       );
@@ -82,7 +82,7 @@ function AdminProfile() {
   const toggleArticleStatus = async (article) => {
     try {
       const res = await axios.patch(
-        "http://localhost:4000/admin-api/article-status",
+        "https://blog-app-capstone-project-fliv.onrender.com/admin-api/article-status",
         {
           articleId: article._id,
           isArticleActive: !article.isArticleActive,

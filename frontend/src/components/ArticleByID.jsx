@@ -47,7 +47,7 @@ function ArticleByID() {
       setLoading(true);
       try {
         const res = await axios.get(
-          `http://localhost:4000/user-api/article/${id}`,
+          `https://blog-app-capstone-project-fliv.onrender.com/user-api/article/${id}`,
           { withCredentials: true }
         );
         if (res.status === 200) {
@@ -86,7 +86,7 @@ function ArticleByID() {
   const toggleArticleStatus = async () => {
     try {
       const res = await axios.patch(
-        "http://localhost:4000/author-api/articles",
+        "https://blog-app-capstone-project-fliv.onrender.com/author-api/articles",
         { articleId: article._id, isArticleActive: !article.isArticleActive },
         { withCredentials: true }
       );
@@ -104,7 +104,7 @@ function ArticleByID() {
   const addComment = async (commentObj) => {
     try {
       const res = await axios.put(
-        "http://localhost:4000/user-api/articles",
+        "https://blog-app-capstone-project-fliv.onrender.com/user-api/articles",
         { articleId: article._id, comment: commentObj.comment },
         { withCredentials: true }
       );

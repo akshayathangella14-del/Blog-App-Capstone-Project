@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
-
+import banner from "../assets/banner.png";
 import {
   pageWrapper,
   pageTitleClass,
@@ -27,7 +27,7 @@ function Home() {
       setLoading(true);
 
       const res = await axios.get(
-        "http://localhost:4000/user-api/articles",
+        "https://blog-app-capstone-project-fliv.onrender.com/user-api/articles",
         { withCredentials: true }
       );
 
@@ -55,9 +55,12 @@ function Home() {
     <div className="bg-white min-h-screen">
       {/* HERO SECTION */}
       <section className="relative overflow-hidden border-b border-[#e8e8ed]">
-        <div className={`${pageWrapper} py-24`}>
+        <div
+          className={`${pageWrapper} py-20 flex flex-col lg:flex-row items-center justify-between gap-14`}
+        >
 
-          <div className="max-w-3xl">
+          {/* LEFT CONTENT */}
+          <div className="max-w-3xl flex-1">
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#0066cc] mb-4">
               Modern Publishing Platform
             </p>
@@ -92,6 +95,16 @@ function Home() {
               </button>
             </div>
           </div>
+
+          {/* RIGHT IMAGE */}
+          <div className="flex-1 flex justify-center lg:justify-end">
+            <img
+              src={banner}
+              alt="banner"
+              className="w-full max-w-md object-contain"
+            />
+          </div>
+
         </div>
       </section>
 

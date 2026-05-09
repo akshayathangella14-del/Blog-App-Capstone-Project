@@ -38,7 +38,7 @@ function WriteArticles() {
       //set loading true
       setLoading(true);
       //make POST req to save new article
-      let res = await axios.post("http://localhost:4000/author-api/articles", articleObj, { withCredentials: true });
+      let res = await axios.post("https://blog-app-capstone-project-fliv.onrender.com/author-api/articles", articleObj, { withCredentials: true });
       //navigate to AuthorArticles
       if (res.status === 201) {
         toast.success("Article published successfully")

@@ -21,7 +21,7 @@ function UsersList() {
     try {
       setLoading(true);
       const res = await axios.get(
-        "http://localhost:4000/admin-api/users",
+        "https://blog-app-capstone-project-fliv.onrender.com/admin-api/users",
         { withCredentials: true }
       );
       setUsers(res.data.payload || []);
@@ -39,7 +39,7 @@ function UsersList() {
   const toggleStatus = async (user) => {
     try {
       const res = await axios.patch(
-        "http://localhost:4000/admin-api/user-status",
+        "https://blog-app-capstone-project-fliv.onrender.com/admin-api/user-status",
         {
           userId: user._id,
           isUserActive: !user.isUserActive,

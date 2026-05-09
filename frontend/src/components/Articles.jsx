@@ -31,7 +31,7 @@ function Articles() {
         setError(null);
 
         const res = await axios.get(
-          "http://localhost:4000/user-api/articles",
+          "https://blog-app-capstone-project-fliv.onrender.com/user-api/articles",
           {
             withCredentials: true,
           }

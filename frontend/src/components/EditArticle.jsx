@@ -50,7 +50,7 @@ function EditArticle() {
       modifiedArticle.articleId = id;
 
       const res = await axios.put(
-        "http://localhost:4000/author-api/articles",
+        "https://blog-app-capstone-project-fliv.onrender.com/author-api/articles",
         modifiedArticle,
         { withCredentials: true }
       );

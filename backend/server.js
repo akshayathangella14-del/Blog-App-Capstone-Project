@@ -11,7 +11,7 @@ import cors from 'cors'
 config()
 const app = exp()
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:3000', 'https://capstone-project-nine-jet.vercel.app'],
+    origin: ['http://localhost:5173', 'http://localhost:3000', 'https://blog-app-capstone-project-fliv.onrender.com'],
     credentials: true, // This allows cookies/headers to pass through
     methods: ["GET", "POST", "PUT", "DELETE","PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"]
