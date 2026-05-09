@@ -27,43 +27,40 @@ function Register() {
   const navigate = useNavigate();
 
   //When user registration submitted
-const onUserRegister = async (userObj) => {
-  let { profileImageUrl } = userObj;
-
-  const formData = new FormData();
-
-  // ✅ MUST ADD THESE (THIS IS YOUR BUG)
-  formData.append("role", userObj.role);
-  formData.append("firstName", userObj.firstName);
-  formData.append("lastName", userObj.lastName);
-  formData.append("email", userObj.email);
-  formData.append("password", userObj.password);
-
-  // ✅ file
-  if (profileImageUrl?.[0]) {
-    formData.append("profileImageUrl", profileImageUrl[0]);
-  }
-
-  try {
-    setLoading(true);
-
-    let res = await axios.post(
-      "https://capstone-project-bhy0.onrender.com/auth/users",
-      formData,
-      { withCredentials: true }
-    );
-
-    if (res.status === 201) {
-      navigate("/login");
+  const onUserRegister = async (userObj) => {
+    console.log(userObj);
+    let {profileImageUrl}=userObj
+    // file + userObj -->FormData
+    //create ForMData object
+    const formData = new FormData();
+    //add all user properties and file to this formdata object
+    formData.append("role", userObj.role);
+    formData.append("firstName", userObj.firstName);
+    formData.append("lastName", userObj.lastName);
+    formData.append("email", userObj.email);
+    formData.append("password", userObj.password);
+    //Append if image is exists
+    if (profileImageUrl?.[0]) {
+      formData.append("profileImageUrl", profileImageUrl[0]);
     }
+   console.log(profileImageUrl)
+    try {
+      //start loading
+      setLoading(true);
+      //make HTTP POST req to create User in backend
+      let res = await axios.post("http://localhost:4000/auth/users", formData,{withCredentials:true});
 
-  } catch (err) {
-    console.log("ERROR:", err.response?.data);
-    setApiError(err.response?.data?.error || "Registration failed");
-  } finally {
-    setLoading(false);
-  }
-};
+      if (res.status === 201) {
+        //navigate to Login
+        navigate("/login");
+      }
+    } catch (err) {
+      console.log("err in registration", err);
+      setApiError(err.response?.data?.error || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className={`${pageBackground} flex items-center justify-center py-16 px-4`}>
@@ -185,21 +182,25 @@ const onUserRegister = async (userObj) => {
             <input
               type="file"
               className={inputClass}
-              accept="image/png,image/jpeg"
+              accept="image/png, image/jpeg"
               {...register("profileImageUrl", {
                 validate: {
                   fileType: (files) => {
                     if (!files?.[0]) return true;
-                    return ["image/png", "image/jpeg"].includes(files[0].type)
-                      || "Only JPG/PNG allowed";
+                    return ["image/png", "image/jpeg"].includes(files[0].type) || "Only JPG/PNG allowed";
                   },
                   fileSize: (files) => {
                     if (!files?.[0]) return true;
-                    return files[0].size <= 2 * 1024 * 1024
-                      || "Max size 2MB";
+                    return files[0].size <= 2 * 1024 * 1024 || "MAx size 2MB";
                   },
                 },
               })}
+              onChange={(event) => {
+                let file = event.target.files[0];
+                if (file) {
+                  setPriview(URL.createObjectURL(file));
+                }
+              }}
             />
 
             {errors.profileImageUrl && <p className={errorClass}>{errors.profileImageUrl.message}</p>}

@@ -1,5 +1,7 @@
 import { NavLink } from "react-router";
 import { useAuth } from "../store/authStore";
+import logo from "../assets/logo.jpg";
+
 import {
   navbarClass,
   navContainerClass,
@@ -32,11 +34,23 @@ function Header() {
       <div className={navContainerClass}>
 
         {/* LOGO */}
-        <NavLink to="/" className={navBrandClass}>
-          MyBlog
+        <NavLink
+          to="/"
+          className="flex items-center gap-2"
+        >
+          <img
+            src={logo}
+            alt="logo"
+            className="w-8 h-8 rounded-lg object-cover"
+          />
+
+          <span className={`${navBrandClass} text-lg`}>
+            MyBlog
+          </span>
         </NavLink>
 
-        <ul className={navLinksClass}>
+        {/* NAVIGATION */}
+        <ul className={`${navLinksClass} gap-5`}>
 
           {/* HOME */}
           <li>
@@ -44,7 +58,9 @@ function Header() {
               to="/"
               end
               className={({ isActive }) =>
-                isActive ? navLinkActiveClass : navLinkClass
+                isActive
+                  ? "text-[#0066cc] text-sm font-medium"
+                  : "text-[#6e6e73] hover:text-[#1d1d1f] text-sm transition"
               }
             >
               Home
@@ -58,7 +74,9 @@ function Header() {
                 <NavLink
                   to="/register"
                   className={({ isActive }) =>
-                    isActive ? navLinkActiveClass : navLinkClass
+                    isActive
+                      ? "text-[#0066cc] text-sm font-medium"
+                      : "text-[#6e6e73] hover:text-[#1d1d1f] text-sm transition"
                   }
                 >
                   Register
@@ -69,7 +87,9 @@ function Header() {
                 <NavLink
                   to="/login"
                   className={({ isActive }) =>
-                    isActive ? navLinkActiveClass : navLinkClass
+                    isActive
+                      ? "text-[#0066cc] text-sm font-medium"
+                      : "text-[#6e6e73] hover:text-[#1d1d1f] text-sm transition"
                   }
                 >
                   Login
@@ -84,7 +104,9 @@ function Header() {
               <NavLink
                 to={getProfilePath()}
                 className={({ isActive }) =>
-                  isActive ? navLinkActiveClass : navLinkClass
+                  isActive
+                    ? "text-[#0066cc] text-sm font-medium"
+                    : "text-[#6e6e73] hover:text-[#1d1d1f] text-sm transition"
                 }
               >
                 Profile

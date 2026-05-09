@@ -11,7 +11,7 @@ userApp.get("/articles", async (req, res) => {
         const articlesList = await ArticleModel.find({
             isArticleActive: true
         })
-        .populate("author", "firstName lastName profileImageUrl");
+            .populate("author", "firstName lastName profileImageUrl");
 
         res.status(200).json({
             message: "Articles fetched successfully",
@@ -47,9 +47,9 @@ userApp.put("/articles", verifyToken("USER"), async (req, res) => {
 
         articleDocument.comments.push({
             user: userId,
-            comment: comment
+            comment: comment,
+            createdAt: new Date()
         });
-
         await articleDocument.save();
 
         const updatedArticle = await ArticleModel.findById(articleId)

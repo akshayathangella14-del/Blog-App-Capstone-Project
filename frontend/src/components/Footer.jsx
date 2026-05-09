@@ -1,62 +1,145 @@
+import { NavLink } from "react-router";
 import {
-  mutedText,
   linkClass,
+  mutedText,
 } from "../styles/common";
-import { useNavigate } from "react-router";
 
 function Footer() {
-  const navigate = useNavigate();
+  const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-white/50 backdrop-blur-md border-t border-gray-100 mt-24">
-      <div className="max-w-6xl mx-auto px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-          
-          {/* Brand Section */}
-          <div className="col-span-1 md:col-span-2">
-            <h2 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-500 bg-clip-text text-transparent mb-4">
-              BlogSphere
-            </h2>
-            <p className={`${mutedText} max-w-xs leading-relaxed`}>
-              A premium space for creators to share insights, stories, and expertise with a global audience.
+    <footer className="bg-white border-t border-[#e8e8ed] mt-20">
+      <div className="max-w-5xl mx-auto px-6 py-12">
+        {/* MAIN FOOTER CONTENT */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+          {/* BRAND */}
+          <div className="col-span-1">
+            <h3 className="text-base font-semibold text-[#1d1d1f] mb-4">
+              MyBlog
+            </h3>
+            <p className={`${mutedText} text-sm leading-relaxed`}>
+              A modern blogging platform where authors share their insights and readers discover quality content.
             </p>
           </div>
 
-          {/* Navigation Links */}
+          {/* QUICK LINKS */}
           <div>
-            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-widest mb-5">
-              Platform
-            </h3>
-            <ul className="flex flex-col gap-3">
-              <li><button onClick={() => navigate("/")} className={`${linkClass} text-sm !no-underline`}>Home</button></li>
-              <li><button onClick={() => navigate("/articles")} className={`${linkClass} text-sm !no-underline`}>Articles</button></li>
-              <li><button onClick={() => navigate("/login")} className={`${linkClass} text-sm !no-underline`}>Login</button></li>
+            <h4 className="text-sm font-semibold text-[#1d1d1f] mb-4">
+              Explore
+            </h4>
+            <ul className="space-y-2">
+              <li>
+                <NavLink to="/" className={linkClass + " text-sm"}>
+                  Home
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/register" className={linkClass + " text-sm"}>
+                  Join Us
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/login" className={linkClass + " text-sm"}>
+                  Login
+                </NavLink>
+              </li>
             </ul>
           </div>
 
-          {/* Social / Info */}
+          {/* CATEGORIES */}
           <div>
-            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-widest mb-5">
-              Community
-            </h3>
-            <ul className="flex flex-col gap-3 text-sm text-gray-500">
-              <li className="hover:text-indigo-600 cursor-pointer transition-colors">Twitter / X</li>
-              <li className="hover:text-indigo-600 cursor-pointer transition-colors">LinkedIn</li>
-              <li className="hover:text-indigo-600 cursor-pointer transition-colors">Newsletter</li>
+            <h4 className="text-sm font-semibold text-[#1d1d1f] mb-4">
+              Categories
+            </h4>
+            <ul className="space-y-2">
+              <li>
+                <a href="#" className={linkClass + " text-sm"}>
+                  Technology
+                </a>
+              </li>
+              <li>
+                <a href="#" className={linkClass + " text-sm"}>
+                  Programming
+                </a>
+              </li>
+              <li>
+                <a href="#" className={linkClass + " text-sm"}>
+                  Web Development
+                </a>
+              </li>
+              <li>
+                <a href="#" className={linkClass + " text-sm"}>
+                  AI & ML
+                </a>
+              </li>
             </ul>
           </div>
 
+          {/* RESOURCES */}
+          <div>
+            <h4 className="text-sm font-semibold text-[#1d1d1f] mb-4">
+              Resources
+            </h4>
+            <ul className="space-y-2">
+              <li>
+                <a href="#" className={linkClass + " text-sm"}>
+                  About Us
+                </a>
+              </li>
+              <li>
+                <a href="#" className={linkClass + " text-sm"}>
+                  Privacy Policy
+                </a>
+              </li>
+              <li>
+                <a href="#" className={linkClass + " text-sm"}>
+                  Terms of Service
+                </a>
+              </li>
+              <li>
+                <a href="#" className={linkClass + " text-sm"}>
+                  Contact
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-8 border-t border-gray-50 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className={`${mutedText} text-[13px]`}>
-            © {new Date().getFullYear()} BlogSphere. Crafted with passion for writers.
-          </p>
-          
-          <div className="flex gap-8 text-[13px] text-gray-400">
-            <span className="hover:text-gray-600 cursor-pointer">Privacy Policy</span>
-            <span className="hover:text-gray-600 cursor-pointer">Terms of Service</span>
+        {/* DIVIDER */}
+        <div className="border-t border-[#e8e8ed] py-8"></div>
+
+        {/* BOTTOM SECTION */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          {/* LEFT */}
+          <div className={mutedText}>
+            <p className="text-xs text-center sm:text-left">
+              © {currentYear} MyBlog. All rights reserved. Built with passion for writers and readers.
+            </p>
+          </div>
+
+          {/* RIGHT - SOCIAL/LINKS */}
+          <div className="flex items-center gap-6">
+            <a
+              href="#"
+              className={linkClass + " text-xs"}
+              title="Twitter"
+            >
+              Twitter
+            </a>
+            <a
+              href="#"
+              className={linkClass + " text-xs"}
+              title="GitHub"
+            >
+              GitHub
+            </a>
+            <a
+              href="#"
+              className={linkClass + " text-xs"}
+              title="LinkedIn"
+            >
+              LinkedIn
+            </a>
           </div>
         </div>
       </div>

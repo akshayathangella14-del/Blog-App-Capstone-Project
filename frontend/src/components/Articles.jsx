@@ -1,129 +1,193 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router";
+
 import {
-  pageBackground,
   pageWrapper,
   pageTitleClass,
+  bodyText,
+  loadingClass,
+  errorClass,
+  emptyStateClass,
   articleGrid,
   articleCardClass,
   articleTitle,
   articleExcerpt,
   articleMeta,
-  loadingClass,
-  emptyStateClass,
-  errorClass,
-  tagClass, // Assuming this exists in your common.js
+  tagClass,
 } from "../styles/common";
-
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router";
 
 function Articles() {
   const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
 
-  const fetchArticles = async () => {
-    try {
-      setLoading(true);
-      // Get the token from wherever you store it
-      const token = localStorage.getItem("token"); 
-
-      const res = await axios.get("https://capstone-project-bhy0.onrender.com/user-api/articles", {
-        headers: {
-          Authorization: token ? `Bearer ${token}` : ""
-        }
-      });
-      setArticles(res.data.payload || []);
-    } catch (err) {
-      console.error("Fetch error:", err);
-      setError("Failed to load articles");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const res = await axios.get(
+          "http://localhost:4000/user-api/articles",
+          {
+            withCredentials: true,
+          }
+        );
+
+        if (res.status === 200) {
+          setArticles(res.data.payload || []);
+        }
+      } catch (err) {
+        setError(
+          err.response?.data?.error ||
+          "Unable to load articles at this time."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchArticles();
   }, []);
 
-  if (loading) return (
-    <div className={`${pageBackground} flex items-center justify-center`}>
-      <div className={loadingClass}>Fetching latest stories...</div>
-    </div>
-  );
+  // FORMAT DATE SAFELY
+  const formatDate = (date) => {
+    if (!date) return "Recently";
 
-  if (error) return <div className={`${errorClass} m-10`}>{error}</div>;
+    const d = new Date(date);
+
+    if (isNaN(d.getTime())) return "Recently";
+
+    return d.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+  };
 
   return (
-    <div className={`${pageBackground} min-h-screen`}>
-      <div className={pageWrapper}>
-        
-        {/* Header Section */}
-        <div className="mb-16 border-b border-gray-100 pb-8">
-          <h1 className={pageTitleClass}>Articles</h1>
-          <p className="text-gray-500 mt-2 text-lg">
-            Explore the latest thoughts, tutorials, and insights from our community.
-          </p>
-        </div>
+    <div className={pageWrapper}>
 
-        {/* Optimized Grid: 1 col on mobile, 2 on tablet, 3 on desktop */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {/* HEADER */}
+      <header className="mb-12">
+        <h1 className={pageTitleClass}>Articles</h1>
+
+        <p className={`${bodyText} mt-2 text-lg`}>
+          Explore the latest insights, tutorials,
+          and stories from our community.
+        </p>
+      </header>
+
+      {/* LOADING */}
+      {loading && (
+        <p className={loadingClass}>
+          Fetching latest articles...
+        </p>
+      )}
+
+      {/* ERROR */}
+      {error && (
+        <p className={errorClass}>
+          {error}
+        </p>
+      )}
+
+      {/* EMPTY */}
+      {!loading && articles.length === 0 && !error && (
+        <p className={emptyStateClass}>
+          No articles have been published yet.
+        </p>
+      )}
+
+      {/* ARTICLES GRID */}
+      {!loading && articles.length > 0 && (
+        <div className={articleGrid}>
+
           {articles.map((article) => (
+
             <div
               key={article._id}
-              className={`${articleCardClass} group flex flex-col justify-between h-full hover:shadow-2xl transition-all duration-500 ease-out border-white/40`}
-              onClick={() => navigate(`/article/${article._id}`, { state: article })}
+              className={`${articleCardClass} cursor-pointer`}
+              onClick={() =>
+                navigate(`/article/${article._id}`, {
+                  state: article,
+                })
+              }
             >
-              <div>
-                {/* Category/Tag placeholder */}
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-bold uppercase tracking-wider">
-                    {article.category || "General"}
-                  </span>
-                  <span className="text-gray-300 text-xs">•</span>
-                  <span className="text-gray-400 text-[10px] font-medium uppercase tracking-widest">
-                    5 min read
-                  </span>
-                </div>
 
-                <h2 className={`${articleTitle} group-hover:text-indigo-600 transition-colors duration-300 leading-tight`}>
-                  {article.title}
-                </h2>
-
-                <p className={`${articleExcerpt} mt-4 text-gray-500 line-clamp-3`}>
-                  {article.content}
-                </p>
+              {/* CATEGORY */}
+              <div className="flex justify-between items-start mb-2">
+                <span className={tagClass}>
+                  {article.category || "General"}
+                </span>
               </div>
 
-              {/* Footer info with Avatar placeholder */}
-              <div className="mt-8 pt-6 border-t border-gray-50 flex items-center justify-between">
+              {/* TITLE */}
+              <h2 className={articleTitle}>
+                {article.title}
+              </h2>
+
+              {/* CONTENT */}
+              <p className={`${articleExcerpt} line-clamp-3`}>
+                {article.content}
+              </p>
+
+              {/* FOOTER */}
+              <div className="mt-auto pt-4 flex items-center justify-between">
+
+                {/* AUTHOR */}
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white text-[10px] font-bold shadow-sm">
-                    {article.author?.firstName?.charAt(0) || "U"}
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-xs font-bold text-gray-800">
-                      {article.author?.firstName || "Unknown"}
-                    </span>
-                    <span className="text-[10px] text-gray-400">
-                      {new Date(article.createdAt).toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
-                    </span>
+
+                  {/* PROFILE IMAGE / FALLBACK */}
+                  {article.author?.profileImageUrl ? (
+                    <img
+                      src={article.author.profileImageUrl}
+                      alt="author"
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-[#0066cc]/10 text-[#0066cc] flex items-center justify-center text-sm font-semibold">
+                      {
+                        (
+                          article.author?.firstName?.charAt(0) ||
+                          article.author?.firstName?.charAt(0) ||
+                          "A"
+                        ).toUpperCase()
+                      }
+                    </div>
+                  )}
+
+                  {/* AUTHOR NAME */}
+                  <div>
+                    <p className="text-sm font-medium text-[#1d1d1f]">
+                      {
+                        article.author?.firstName ||
+                        article.author?.firstName ||
+                        "Anonymous"
+                      }
+                    </p>
+
+                    <p className={articleMeta}>
+                      Author
+                    </p>
                   </div>
                 </div>
-                
-                {/* Visual Arrow link */}
-                <div className="text-indigo-400 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </div>
+
+                {/* DATE */}
+                <p className={articleMeta}>
+                  {formatDate(
+                    article.dateOfModification ||
+                    article.updatedAt ||
+                    article.createdAt
+                  )}
+                </p>
               </div>
             </div>
           ))}
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -3,50 +3,54 @@ import { config } from "dotenv";
 import { UserModel } from "../models/UserModel.js";
 
 const { verify } = jwt;
+
 config();
 
 export const verifyToken = (...allowedRoles) => {
   return async (req, res, next) => {
     try {
-      // Look for token in Cookies OR Authorization Header
-let token = req.cookies?.token;
-
-    if (!token && req.headers.authorization) {
-    token = req.headers.authorization.split(" ")[1]; 
-    }
+      // GET TOKEN
+      const token = req.cookies?.token;
 
       if (!token) {
-        return res.status(401).json({ message: "Please login" });
-      }
-
-      const decodedToken = verify(token, process.env.SECRET_KEY);
-
-      // ✅ FETCH USER FROM DB
-      const user = await UserModel.findById(decodedToken.id);
-
-      if (!user) {
-        return res.status(401).json({ message: "User not found" });
-      }
-
-      // 🚨 BLOCK CHECK
-      if (!user.isUserActive) {
-        return res.status(403).json({
-          message: "Your account is blocked. Contact admin.",
+        return res.status(401).json({
+          message: "Please login first",
         });
       }
 
-      // ROLE CHECK
+      // VERIFY TOKEN
+      const decodedToken = verify(
+        token,
+        process.env.SECRET_KEY
+      );
+
+      // CHECK ROLE
       if (!allowedRoles.includes(decodedToken.role)) {
         return res.status(403).json({
-          message: "You are not authorised",
+          message: "You are not authorized",
         });
       }
 
-      req.user = decodedToken;
+      // FETCH FULL USER DATA
+      const user = await UserModel.findById(
+        decodedToken.id
+      ).select("-password");
+
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found",
+        });
+      }
+
+      // STORE COMPLETE USER
+      req.user = user;
+
       next();
 
     } catch (err) {
-      res.status(401).json({ message: "Invalid token" });
+      res.status(401).json({
+        message: "Invalid token",
+      });
     }
   };
 };

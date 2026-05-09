@@ -6,22 +6,15 @@ export const useAuth = create((set) => ({
   loading: false,
   isAuthenticated: false,
   error: null,
-login: async (userCred) => {
+  login: async (userCred) => {
+    // const { role, ...userCredObj } = userCredWithRole;
     try {
+      //set loading true
       set({ loading: true, currentUser: null, isAuthenticated: false, error: null });
-
-      let res = await axios.post(
-        "https://capstone-project-bhy0.onrender.com/auth/login",
-        userCred,
-        { withCredentials: true }
-      );
-
+      //make api call
+      let res = await axios.post("http://localhost:4000/auth/login", userCred, { withCredentials: true });
+      //update state
       if (res.status === 200) {
-        // ✅ SAVE TOKEN TO LOCAL STORAGE
-        if (res.data.token) {
-          localStorage.setItem("token", res.data.token);
-        }
-
         set({
           currentUser: res.data?.payload,
           loading: false,
@@ -30,32 +23,44 @@ login: async (userCred) => {
         });
       }
     } catch (err) {
+      console.log("err is ", err);
       set({
         loading: false,
         isAuthenticated: false,
         currentUser: null,
+        //error: err,
         error: err.response?.data?.message || "Login failed",
       });
     }
   },
-
   logout: async () => {
     try {
-      await axios.get("https://capstone-project-bhy0.onrender.com/auth/logout", { withCredentials: true });
-      
-      // ✅ REMOVE TOKEN ON LOGOUT
-      localStorage.removeItem("token");
-
-      set({ currentUser: null, isAuthenticated: false, error: null, loading: false });
+      //set loading state
+      //make logout api req
+      let res = await axios.get("http://localhost:4000/auth/logout", { withCredentials: true });
+      //update state
+      if (res.status === 200) {
+        set({
+          currentUser: null,
+          isAuthenticated: false,
+          error: null,
+          loading: false,
+        });
+      }
     } catch (err) {
-      set({ loading: false, isAuthenticated: false, currentUser: null });
+      set({
+        loading: false,
+        isAuthenticated: false,
+        currentUser: null,
+        error: err.response?.data?.error || "Logout failed",
+      });
     }
   },
   // restore login
   checkAuth: async () => {
     try {
       set({ loading: true });
-      const res = await axios.get("https://capstone-project-bhy0.onrender.com/auth/check-auth", { withCredentials: true });
+      const res = await axios.get("http://localhost:4000/auth/check-auth", { withCredentials: true });
 
       set({
         currentUser: res.data.payload,

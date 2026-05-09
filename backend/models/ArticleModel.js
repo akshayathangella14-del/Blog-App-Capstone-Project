@@ -1,16 +1,22 @@
 import { Schema, model, Types } from 'mongoose'
 
-const commentSchema = new Schema({
+const commentSchema = new Schema(
+  {
     user: {
-        type: Types.ObjectId,
-        ref: "user",
-        required: [true, "User ID required"]
+      type: Types.ObjectId,
+      ref: "user",
+      required: [true, "User ID required"],
     },
+
     comment: {
-        type: String,
-        required:[true,"Enter a comment"]
-    }
-})
+      type: String,
+      required: [true, "Enter a comment"],
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 const articleSchema = new Schema({
     author: {
         type: Types.ObjectId,

@@ -21,7 +21,7 @@ function UsersList() {
     try {
       setLoading(true);
       const res = await axios.get(
-        "https://capstone-project-bhy0.onrender.com/admin-api/users",
+        "http://localhost:4000/admin-api/users",
         { withCredentials: true }
       );
       setUsers(res.data.payload || []);
@@ -39,7 +39,7 @@ function UsersList() {
   const toggleStatus = async (user) => {
     try {
       const res = await axios.patch(
-        "https://capstone-project-bhy0.onrender.com/admin-api/user-status",
+        "http://localhost:4000/admin-api/user-status",
         {
           userId: user._id,
           isUserActive: !user.isUserActive,

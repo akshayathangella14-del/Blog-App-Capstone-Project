@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import axios from "axios";
-
+import { toast } from 'react-hot-toast'
 import { useNavigate } from "react-router";
 
 import {
@@ -28,40 +28,29 @@ function WriteArticles() {
     reset,
   } = useForm();
 
-const submitArticle = async (articleObj) => {
-  setLoading(true);
-  try {
-    if (!currentUser?._id) {
-      console.log("User not logged in");
-      return;
-    }
-    
-    // 1. Get the token from storage (check if you store it in localStorage or your authStore)
-    const token = localStorage.getItem("token"); 
+  //save article
+  const submitArticle = async (articleObj) => {
+    setLoading(true);
 
+    //add authorId to articleObj
     articleObj.author = currentUser._id;
-
-    // 2. Add the Authorization Header
-    let res = await axios.post(
-      "https://capstone-project-bhy0.onrender.com/author-api/articles", 
-      articleObj, 
-      { 
-        headers: {
-          Authorization: `Bearer ${token}` // THIS IS THE KEY FIX
-        },
-        withCredentials: true 
+    try {
+      //set loading true
+      setLoading(true);
+      //make POST req to save new article
+      let res = await axios.post("http://localhost:4000/author-api/articles", articleObj, { withCredentials: true });
+      //navigate to AuthorArticles
+      if (res.status === 201) {
+        toast.success("Article published successfully")
+        navigate("../articles");
+        // navigate("./author-profile/articles");
       }
-    );
-
-    if (res.status === 201) {
-      navigate("/author-profile/articles");
+    } catch (err) {
+      toast.error(err.response?.data?.error || "Failed to publish article");
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    console.log("Error creating article:", err);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div className={formCard}>
@@ -99,10 +88,30 @@ const submitArticle = async (articleObj) => {
             })}
           >
             <option value="">Select category</option>
+
             <option value="technology">Technology</option>
             <option value="programming">Programming</option>
-            <option value="ai">AI</option>
+            <option value="ai">Artificial Intelligence</option>
             <option value="web-development">Web Development</option>
+            <option value="mobile-development">Mobile Development</option>
+            <option value="cybersecurity">Cyber Security</option>
+            <option value="cloud-computing">Cloud Computing</option>
+            <option value="data-science">Data Science</option>
+            <option value="machine-learning">Machine Learning</option>
+            <option value="devops">DevOps</option>
+            <option value="software-engineering">Software Engineering</option>
+            <option value="ui-ux-design">UI/UX Design</option>
+            <option value="blockchain">Blockchain</option>
+            <option value="career-guidance">Career Guidance</option>
+            <option value="productivity">Productivity</option>
+            <option value="startup">Startup</option>
+            <option value="open-source">Open Source</option>
+            <option value="tutorials">Tutorials</option>
+            <option value="coding-interview">Coding Interview</option>
+            <option value="college-life">College Life</option>
+            <option value="project-showcase">Project Showcase</option>
+            <option value="freelancing">Freelancing</option>
+            <option value="tech-news">Tech News</option>
           </select>
 
           {errors.category && <p className={errorClass}>{errors.category.message}</p>}

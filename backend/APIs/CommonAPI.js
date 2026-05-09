@@ -4,9 +4,9 @@ import { hash, compare } from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { verifyToken } from "../middlewares/VerifyToken.js"
 import { config } from 'dotenv';
-import { upload } from "../middlewares/multer.js";
-import { uploadToCloudinary } from "../middlewares/cloudinaryUpload.js";
-import cloudinary from "../middlewares/cloudinary.js";
+import { upload } from "../config/multer.js";
+import { uploadToCloudinary } from "../config/cloudinaryUpload.js";
+import cloudinary from "../config/cloudinary.js";
 
 const { sign } = jwt
 export const commonApp = exp.Router()

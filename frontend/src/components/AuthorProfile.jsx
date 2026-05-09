@@ -1,91 +1,109 @@
 import { NavLink, Outlet, useNavigate } from "react-router";
 import { useAuth } from "../store/authStore";
-// Import cardClass and other typography/button styles
-import { 
-  pageWrapper, 
-  navLinkClass, 
-  divider, 
-  navLinkActiveClass, 
-  cardClass, 
-  headingClass, 
-  mutedText,
-  primaryBtn // or a custom logout style
+import toast from "react-hot-toast";
+
+import {
+  pageWrapper,
+  navLinkClass,
+  divider,
 } from "../styles/common";
 
 function AuthorProfile() {
   const currentUser = useAuth((state) => state.currentUser);
   const logout = useAuth((state) => state.logout);
+
   const navigate = useNavigate();
 
+  // LOGOUT FUNCTION
   const onLogout = async () => {
-    await logout();
-    navigate("/login");
+    try {
+      await logout();
+
+      toast.success("Signed out successfully 👋");
+
+      navigate("/login", {
+        replace: true,
+      });
+    } catch (err) {
+      toast.error("Logout failed");
+    }
   };
 
   return (
     <div className={pageWrapper}>
-      <div className="flex flex-col md:flex-row gap-12 items-start">
-        {/* Sidebar - Now using the Premium Card Style */}
-        <aside className="w-full md:w-80 sticky top-32">
-          <div className={cardClass}>
-            <div className="flex flex-col items-center text-center">
-              {/* Profile Image with Glow */}
-              <div className="relative group">
-                 <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
-                {currentUser?.profileImageUrl ? (
-                  <img
-                    src={currentUser.profileImageUrl}
-                    className="relative w-28 h-28 rounded-full object-cover border-2 border-white/10"
-                    alt="profile"
-                  />
-                ) : (
-                  <div className="relative w-28 h-28 rounded-full bg-white/5 border-2 border-white/10 text-white flex items-center justify-center text-4xl font-black">
-                    {currentUser?.firstName?.charAt(0).toUpperCase()}
-                  </div>
-                )}
-              </div>
 
-              <h2 className={`${headingClass} mt-6 mb-1`}>
-                {currentUser?.firstName} {currentUser?.lastName}
-              </h2>
-              <p className={mutedText.replace("mb-2 block", "")}>{currentUser?.email}</p>
-              
-              <div className="w-full h-px bg-white/5 my-8"></div>
+      {/* PROFILE HEADER */}
+      <div className="bg-white border border-[#e8e8ed] rounded-3xl p-6 mb-8 shadow-sm flex items-center justify-between">
 
-              {/* Sidebar Navigation */}
-              <nav className="flex flex-col w-full gap-4">
-                <NavLink 
-                  to="articles" 
-                  className={({ isActive }) => 
-                    isActive ? `${navLinkClass} ${navLinkActiveClass} py-2` : `${navLinkClass} py-2 hover:translate-x-1 transition-transform`
-                  }
-                >
-                  My Articles
-                </NavLink>
-                <NavLink 
-                  to="write-article" 
-                  className={({ isActive }) => 
-                    isActive ? `${navLinkClass} ${navLinkActiveClass} py-2` : `${navLinkClass} py-2 hover:translate-x-1 transition-transform`
-                  }
-                >
-                  Write New Article
-                </NavLink>
-                
-                <button 
-                  onClick={onLogout} 
-                  className="mt-6 text-xs font-black text-rose-500 uppercase tracking-[0.3em] hover:text-rose-400 text-center transition-colors border border-rose-500/20 py-3 rounded-xl hover:bg-rose-500/5"
-                >
-                  Logout
-                </button>
-              </nav>
+        {/* LEFT SECTION */}
+        <div className="flex items-center gap-4">
+
+          {/* PROFILE IMAGE */}
+          {currentUser?.profileImageUrl &&
+            currentUser.profileImageUrl.trim() !== "" ? (
+            <img
+              src={currentUser.profileImageUrl}
+              alt="profile"
+              className="w-16 h-16 rounded-full object-cover border"
+            />
+          ) : (
+            <div className="w-16 h-16 rounded-full bg-[#0066cc]/10 text-[#0066cc] flex items-center justify-center text-xl font-semibold">
+              {currentUser?.firstName?.charAt(0).toUpperCase()}
             </div>
-          </div>
-        </aside>
+          )}
 
-        {/* Content Area */}
-        <main className="flex-1 w-full">
-          <Outlet />
-        </main>
+          {/* USER INFO */}
+          <div>
+            <p className="text-sm text-[#6e6e73]">
+              Welcome back
+            </p>
+
+            <h2 className="text-xl font-semibold text-[#1d1d1f]">
+              {currentUser?.firstName}
+            </h2>
+          </div>
+        </div>
+
+        {/* LOGOUT BUTTON */}
+        <button
+          onClick={onLogout}
+          className="bg-[#ff3b30] text-white text-sm px-5 py-2 rounded-full hover:bg-[#d62c23] transition"
+        >
+          Logout
+        </button>
+      </div>
+
+      {/* NAVIGATION */}
+      <div className="flex gap-3 mb-6 bg-[#f5f5f7] p-2 rounded-full w-fit">
+
+        <NavLink
+          to="articles"
+          className={({ isActive }) =>
+            isActive
+              ? "bg-white px-5 py-2 rounded-full text-[#0066cc] text-sm font-medium shadow-sm"
+              : `${navLinkClass} px-5 py-2`
+          }
+        >
+          Articles
+        </NavLink>
+
+        <NavLink
+          to="write-article"
+          className={({ isActive }) =>
+            isActive
+              ? "bg-white px-5 py-2 rounded-full text-[#0066cc] text-sm font-medium shadow-sm"
+              : `${navLinkClass} px-5 py-2`
+          }
+        >
+          Write Article
+        </NavLink>
+      </div>
+
+      <div className={divider}></div>
+
+      {/* CHILD ROUTES */}
+      <div className="mt-6">
+        <Outlet />
       </div>
     </div>
   );
