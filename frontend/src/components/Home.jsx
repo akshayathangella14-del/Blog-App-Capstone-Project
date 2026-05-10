@@ -81,7 +81,13 @@ function Home() {
               {/* Explore Articles */}
               <button
                 className="bg-[#0066cc] text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-[#004499] transition-all"
-                onClick={() => navigate("/articles")}
+                onClick={() => {
+                  if (!localStorage.getItem("token")) {
+                    navigate("/login");
+                  } else {
+                    navigate("/articles");
+                  }
+                }}
               >
                 Explore Articles
               </button>
@@ -135,7 +141,13 @@ function Home() {
             {articles.map((article) => (
               <div
                 key={article._id}
-                onClick={() => navigate(`/article/${article._id}`)}
+                onClick={() => {
+                  if (!localStorage.getItem("token")) {
+                    navigate("/login");
+                  } else {
+                    navigate(`/article/${article._id}`);
+                  }
+                }}
                 className={`${articleCardClass} rounded-3xl border border-[#ececf1] hover:scale-[1.02] hover:shadow-sm duration-300`}
               >
                 {/* CATEGORY */}
